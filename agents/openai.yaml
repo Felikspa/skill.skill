@@ -1,0 +1,4 @@
+interface:
+  display_name: "skill.skill"
+  short_description: "Batch-generate creative Codex skills from random seeds."
+  default_prompt: "Use $skill-skill to batch-generate, score, and build a fresh set of creative skills."
