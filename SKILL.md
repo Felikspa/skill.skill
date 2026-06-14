@@ -46,6 +46,8 @@ Generate skills that extend Codex's capability, not generic tasks it already han
 ## README Rules
 - Include only: title, one-line hook, best use cases, quick start, and what makes it different.
 - Keep it short enough to scan in under 30 seconds.
+- Write Quick Start for a user invoking the skill, not for a developer inspecting files.
+- Do not tell the user to open `SKILL.md`, read reference files, inspect resources, or run validation.
 - Do not include build logs, internal scoring, or long design notes.
 - If the README does not make the skill's value obvious, the skill is not complete.
 

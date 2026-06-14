@@ -15,6 +15,14 @@ README_REQUIRED_HEADINGS = (
     "## Quick Start",
     "## Why Try It",
 )
+README_FORBIDDEN_PATTERNS = (
+    re.compile(r"\bopen\s+`?skill\.md`?\b", re.IGNORECASE),
+    re.compile(r"\bread\s+`?references?/", re.IGNORECASE),
+    re.compile(r"\bread\s+the\s+reference", re.IGNORECASE),
+    re.compile(r"\binspect\s+(the\s+)?resources?\b", re.IGNORECASE),
+    re.compile(r"\brun\s+validation\b", re.IGNORECASE),
+    re.compile(r"validate_skill_output\.py", re.IGNORECASE),
+)
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
@@ -86,6 +94,10 @@ def validate_readme(skill_dir: Path, issues: list[str], max_lines: int) -> None:
     for heading in README_REQUIRED_HEADINGS:
         if heading not in text:
             issues.append(f"README.md missing heading: {heading}")
+    for pattern in README_FORBIDDEN_PATTERNS:
+        if pattern.search(text):
+            issues.append("README.md contains developer-facing Quick Start instructions.")
+            break
     meaningful = [line for line in lines if line.strip() and not line.startswith("#")]
     if len(meaningful) < 4:
         issues.append("README.md is too thin to explain the skill quickly.")
