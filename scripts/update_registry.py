@@ -27,9 +27,9 @@ REQUIRED_RECORD_FIELDS = (
 )
 SHELF_LIMITS = {
     "skill": 34,
-    "hook": 24,
-    "use_when": 24,
-    "spark": 30,
+    "hook": 34,
+    "use_when": 30,
+    "spark": 36,
 }
 
 

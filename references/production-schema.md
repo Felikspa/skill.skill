@@ -87,6 +87,8 @@ Worker payload should include:
 - concept summary
 - required resource types
 - validation checklist
+- explicit `README.md` requirement
+- command to run `scripts/validate_skill_output.py --skill-dir <target>`
 
 Workers must:
 - follow `skill-creator`
