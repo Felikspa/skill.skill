@@ -20,6 +20,7 @@ REQUIRED_RECORD_FIELDS = (
     "use_when",
     "spark",
     "capability_type",
+    "novelty_key",
     "created_at",
     "batch_id",
     "status",

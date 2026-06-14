@@ -89,6 +89,7 @@ def summarize_idea(idea: dict[str, Any], index: int) -> dict[str, Any]:
     spark = clean_text(idea.get("spark"))
     capability_type = clean_text(idea.get("capability_type"))
     directory = normalize_name(idea.get("directory"))
+    novelty_key = normalize_concept(idea.get("novelty_key"))
     return {
         "index": index,
         "name": name,
@@ -98,6 +99,7 @@ def summarize_idea(idea: dict[str, Any], index: int) -> dict[str, Any]:
         "spark": spark,
         "capability_type": capability_type,
         "directory": directory,
+        "novelty_key": novelty_key,
     }
 
 
@@ -115,6 +117,7 @@ def build_thread_spec(summary: dict[str, Any]) -> dict[str, Any]:
             f"Use when: {summary['use_when']}\n"
             f"Spark: {summary['spark']}\n"
             f"Capability type: {summary['capability_type']}\n"
+            f"Novelty key: {summary['novelty_key']}\n"
             "Requirements: use skill-creator, write README.md, keep the root shelf concise, and do not edit global files. "
             "Include at least one meaningful references, scripts, or assets file. "
             "The worker is not done until scripts/validate_skill_output.py --skill-dir <target> passes from the factory root."
@@ -123,6 +126,7 @@ def build_thread_spec(summary: dict[str, Any]) -> dict[str, Any]:
             "batch_index": summary["index"],
             "directory": summary["directory"],
             "capability_type": summary["capability_type"],
+            "novelty_key": summary["novelty_key"],
         },
     }
 
@@ -139,11 +143,17 @@ def validate_batch(batch: dict[str, Any], registry: dict[str, Any]) -> dict[str,
         for skill in registry_skills
         if isinstance(skill.get("concept"), str) and skill.get("concept").strip()
     }
+    registry_novelty_keys = {
+        normalize_concept(skill.get("novelty_key"))
+        for skill in registry_skills
+        if isinstance(skill.get("novelty_key"), str) and skill.get("novelty_key").strip()
+    }
 
     issues: list[dict[str, Any]] = []
     name_counts = Counter(summary["name"] for summary in summaries)
     directory_counts = Counter(summary["directory"] for summary in summaries)
     concept_counts = Counter(normalize_concept(summary["concept"]) for summary in summaries)
+    novelty_key_counts = Counter(summary["novelty_key"] for summary in summaries)
 
     for name, count in name_counts.items():
         if count > 1:
@@ -164,6 +174,14 @@ def validate_batch(batch: dict[str, Any], registry: dict[str, Any]) -> dict[str,
         if concept in registry_concepts:
             names = [summary["name"] for summary in summaries if normalize_concept(summary["concept"]) == concept]
             issues.append({"code": "repeated_registry_concept", "concept": concept, "names": names})
+
+    for novelty_key, count in novelty_key_counts.items():
+        if count > 1:
+            names = [summary["name"] for summary in summaries if summary["novelty_key"] == novelty_key]
+            issues.append({"code": "duplicate_batch_novelty_key", "novelty_key": novelty_key, "names": names})
+        if novelty_key in registry_novelty_keys:
+            names = [summary["name"] for summary in summaries if summary["novelty_key"] == novelty_key]
+            issues.append({"code": "duplicate_registry_novelty_key", "novelty_key": novelty_key, "names": names})
 
     term_sets = {summary["name"]: concept_terms(summary["concept"]) for summary in summaries}
     for left_index, left_summary in enumerate(summaries):

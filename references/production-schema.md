@@ -34,6 +34,7 @@ Use this contract to keep batch generation, worker handoff, registry updates, an
   "use_when": "Frontend style keeps drifting",
   "spark": "Treat HIG like a hard scene graph",
   "capability_type": "style_specialization",
+  "novelty_key": "frontend-design/style-checklist/apple-native-glass",
   "novelty_score": 8.7,
   "duplicate_score": 0.1,
   "directory": "apple-native-ui-builder",
@@ -52,6 +53,7 @@ Required fields:
 - `use_when`
 - `spark`
 - `capability_type`
+- `novelty_key`
 - `created_at`
 - `batch_id`
 - `status`
@@ -85,6 +87,7 @@ Worker payload should include:
 - target skill name
 - target directory
 - concept summary
+- novelty key shaped like `domain/mechanism/metaphor`
 - required resource types
 - validation checklist
 - explicit `README.md` requirement

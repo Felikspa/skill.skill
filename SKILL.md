@@ -13,20 +13,22 @@ Generate skills that extend Codex's capability, not generic tasks it already han
 2. Generate a seed pack with `scripts/generate_seed_pack.py`.
 3. Produce 20-50 candidate ideas from the seed pack.
 4. Reject ideas that overlap with base-model ability or duplicate existing skills.
-5. Score the rest by capability extension, novelty, resource fit, trigger clarity, batchability, and delight.
-6. Confirm the shortlist.
-7. Spawn one worker per approved idea. Give each worker a disjoint target directory.
-8. Build each child skill with `skill-creator` only.
-9. Write a short `README.md` for each child skill.
-10. Validate each child skill with `scripts/validate_skill_output.py`.
-11. Append finished records with `scripts/update_registry.py`.
-12. Refresh `developed-skills.md`.
-13. Save the batch under `production-runs/<batch-id>/`.
+5. Assign each candidate a `novelty_key` shaped like `domain/mechanism/metaphor`.
+6. Score the rest by capability extension, novelty, resource fit, trigger clarity, batchability, and delight.
+7. Confirm the shortlist.
+8. Spawn one worker per approved idea. Give each worker a disjoint target directory.
+9. Build each child skill with `skill-creator` only.
+10. Write a short `README.md` for each child skill.
+11. Validate each child skill with `scripts/validate_skill_output.py`.
+12. Append finished records with `scripts/update_registry.py`.
+13. Refresh `developed-skills.md`.
+14. Save the batch under `production-runs/<batch-id>/`.
 
 ## Selection Rules
 - Prefer skills that stabilize a style, encode a workflow, bundle references, or ship scripts.
 - Reject plain summarization, generic writing, generic planning, or ordinary chat help.
 - Every approved skill must answer: what capability does this add or stabilize that the base model does not already do reliably?
+- Reject near-duplicates with the same domain, mechanism, and central metaphor, even when names differ.
 
 ## Worker Rules
 - One approved skill per worker.
