@@ -22,6 +22,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--skill-dir", required=True, type=Path)
     parser.add_argument("--max-skill-lines", type=int, default=180)
     parser.add_argument("--max-readme-lines", type=int, default=80)
+    parser.add_argument(
+        "--allow-no-resources",
+        action="store_true",
+        help="Allow a child skill with no references, scripts, or assets.",
+    )
     return parser.parse_args(argv)
 
 
@@ -95,7 +100,24 @@ def validate_openai_yaml(skill_dir: Path, issues: list[str]) -> None:
             issues.append(f"agents/openai.yaml missing {token}")
 
 
-def validate_skill_dir(skill_dir: Path, max_skill_lines: int, max_readme_lines: int) -> list[str]:
+def validate_resources(skill_dir: Path, issues: list[str]) -> None:
+    resource_dirs = ("references", "scripts", "assets")
+    has_resource = False
+    for name in resource_dirs:
+        path = skill_dir / name
+        if path.exists() and any(item.is_file() for item in path.rglob("*")):
+            has_resource = True
+            break
+    if not has_resource:
+        issues.append("Skill must include at least one reference, script, or asset file.")
+
+
+def validate_skill_dir(
+    skill_dir: Path,
+    max_skill_lines: int,
+    max_readme_lines: int,
+    allow_no_resources: bool = False,
+) -> list[str]:
     if not skill_dir.exists():
         return [f"Skill directory does not exist: {skill_dir}"]
     if not skill_dir.is_dir():
@@ -105,13 +127,20 @@ def validate_skill_dir(skill_dir: Path, max_skill_lines: int, max_readme_lines: 
     validate_skill_md(skill_dir, issues, max_skill_lines)
     validate_readme(skill_dir, issues, max_readme_lines)
     validate_openai_yaml(skill_dir, issues)
+    if not allow_no_resources:
+        validate_resources(skill_dir, issues)
     return issues
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
     try:
-        issues = validate_skill_dir(args.skill_dir, args.max_skill_lines, args.max_readme_lines)
+        issues = validate_skill_dir(
+            args.skill_dir,
+            args.max_skill_lines,
+            args.max_readme_lines,
+            args.allow_no_resources,
+        )
     except (OSError, UnicodeDecodeError, ValueError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2

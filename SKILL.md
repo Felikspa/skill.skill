@@ -35,6 +35,7 @@ Generate skills that extend Codex's capability, not generic tasks it already han
 - Root registry and shelf updates happen after validation.
 - Every child skill must include a short `README.md` that makes the user want to try it quickly.
 - A worker is not done until `scripts/validate_skill_output.py --skill-dir <target>` passes.
+- Every child skill must include at least one meaningful `references/`, `scripts/`, or `assets/` file.
 - If a worker reports success but the local output check fails, fix the rule or return the task before registry insertion.
 
 ## README Rules

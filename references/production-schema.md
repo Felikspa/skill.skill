@@ -94,6 +94,7 @@ Workers must:
 - follow `skill-creator`
 - write `README.md`
 - pass `scripts/validate_skill_output.py`
+- include at least one meaningful `references/`, `scripts/`, or `assets/` file
 - avoid rewriting global files
 - avoid overlapping directories
 - return the files they changed
