@@ -23,6 +23,8 @@ README_FORBIDDEN_PATTERNS = (
     re.compile(r"\brun\s+validation\b", re.IGNORECASE),
     re.compile(r"validate_skill_output\.py", re.IGNORECASE),
 )
+MIN_REFERENCE_WORDS = 45
+MIN_SCRIPT_BYTES = 450
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
@@ -115,13 +117,34 @@ def validate_openai_yaml(skill_dir: Path, issues: list[str]) -> None:
 def validate_resources(skill_dir: Path, issues: list[str]) -> None:
     resource_dirs = ("references", "scripts", "assets")
     has_resource = False
+    meaningful_resource = False
     for name in resource_dirs:
         path = skill_dir / name
-        if path.exists() and any(item.is_file() for item in path.rglob("*")):
+        if not path.exists():
+            continue
+        for item in path.rglob("*"):
+            if not item.is_file():
+                continue
             has_resource = True
-            break
+            if name == "references":
+                try:
+                    words = re.findall(r"\w+", item.read_text(encoding="utf-8"))
+                except UnicodeDecodeError:
+                    continue
+                if len(words) >= MIN_REFERENCE_WORDS:
+                    meaningful_resource = True
+            elif name == "scripts":
+                if item.stat().st_size >= MIN_SCRIPT_BYTES:
+                    meaningful_resource = True
+            elif name == "assets":
+                if item.stat().st_size > 0:
+                    meaningful_resource = True
     if not has_resource:
         issues.append("Skill must include at least one reference, script, or asset file.")
+    elif not meaningful_resource:
+        issues.append(
+            "Skill resources look too thin; include a substantial reference, script, or asset."
+        )
 
 
 def validate_skill_dir(
