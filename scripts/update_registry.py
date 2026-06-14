@@ -29,7 +29,7 @@ REQUIRED_RECORD_FIELDS = (
 SHELF_LIMITS = {
     "skill": 34,
     "hook": 34,
-    "use_when": 30,
+    "use_when": 36,
     "spark": 36,
 }
 
@@ -141,7 +141,12 @@ def trim_cell(text: str, limit: int) -> str:
         return text
     if limit <= 3:
         return "..."
-    return text[: limit - 3].rstrip() + "..."
+    head = text[: limit - 3].rstrip()
+    if " " in head:
+        word_boundary = head.rfind(" ")
+        if word_boundary >= max(8, limit // 2):
+            head = head[:word_boundary].rstrip()
+    return head + "..."
 
 
 def escape_cell(text: str) -> str:
