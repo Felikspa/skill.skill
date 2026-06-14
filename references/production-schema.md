@@ -129,4 +129,5 @@ Batch flow:
 5. Dispatch one worker per idea.
 6. Validate outputs.
 7. Update registry and shelf.
-8. Write batch artifacts under `production-runs/<batch-id>/`.
+8. Run `scripts/audit_factory.py --root <factory-root>`.
+9. Write batch artifacts under `production-runs/<batch-id>/`.

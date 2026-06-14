@@ -22,7 +22,8 @@ Generate skills that extend Codex's capability, not generic tasks it already han
 11. Validate each child skill with `scripts/validate_skill_output.py`.
 12. Append finished records with `scripts/update_registry.py`.
 13. Refresh `developed-skills.md`.
-14. Save the batch under `production-runs/<batch-id>/`.
+14. Run `scripts/audit_factory.py --root <factory-root>` to catch unregistered or missing skill directories.
+15. Save the batch under `production-runs/<batch-id>/`.
 
 ## Selection Rules
 - Prefer skills that stabilize a style, encode a workflow, bundle references, or ship scripts.
@@ -40,6 +41,7 @@ Generate skills that extend Codex's capability, not generic tasks it already han
 - Every child skill must include at least one meaningful `references/`, `scripts/`, or `assets/` file.
 - If a worker reports success but the local output check fails, fix the rule or return the task before registry insertion.
 - After each worker returns, verify the target directory exists at the requested factory path before accepting the result.
+- Remove or quarantine rejected child skill directories before the final factory audit.
 
 ## README Rules
 - Include only: title, one-line hook, best use cases, quick start, and what makes it different.
@@ -57,4 +59,4 @@ Generate skills that extend Codex's capability, not generic tasks it already han
 ## Resources
 - `idea-seeds/seed-banks.json`: local random word banks.
 - `references/production-schema.md`: registry, batch, and worker contracts.
-- `scripts/`: seed generation, validation, output checks, orchestration, and registry updates.
+- `scripts/`: seed generation, validation, output checks, orchestration, factory audits, and registry updates.
