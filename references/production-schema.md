@@ -98,6 +98,8 @@ Workers must:
 - write `README.md`
 - pass `scripts/validate_skill_output.py`
 - include at least one meaningful `references/`, `scripts/`, or `assets/` file
+- write only to the absolute target directory given in the task
+- report the absolute target directory in the final response
 - avoid rewriting global files
 - avoid overlapping directories
 - return the files they changed

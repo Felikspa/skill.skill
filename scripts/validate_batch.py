@@ -120,6 +120,7 @@ def build_thread_spec(summary: dict[str, Any]) -> dict[str, Any]:
             f"Novelty key: {summary['novelty_key']}\n"
             "Requirements: use skill-creator, write README.md, keep the root shelf concise, and do not edit global files. "
             "Include at least one meaningful references, scripts, or assets file. "
+            "Write only to the absolute target directory supplied by the main agent, and report that absolute path in the final response. "
             "The worker is not done until scripts/validate_skill_output.py --skill-dir <target> passes from the factory root."
         ),
         "metadata": {
